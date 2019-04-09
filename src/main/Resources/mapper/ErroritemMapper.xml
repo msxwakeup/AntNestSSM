@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.antnest.mapper.ErroritemMapper">
+    
+    <resultMap id="errorItem" type="com.antnest.po.ErrorItem">
+        <id column="e_id" property="eId" />
+        <result column="Yanswer" property="Yanswer" />
+        <result column="times" property="times" />
+        <result column="finishtimes" property="finishtimes" />
+        <!--
+             一对多   property为映射的ErrorItem中对应的属性
+        -->
+        <association property="member" javaType="com.antnest.po.Member">
+            <id column="mem_id" property="memId"/>
+            <result column="mem_name" property="memName"/>
+        </association>
+
+        <association property="items" javaType="com.antnest.po.Items" >
+            <id column="it_id" property="itId"/>
+            <result column="catagroy" property="catagroy"/>
+        </association>
+    </resultMap>
+	<select id="geterroritems" resultMap="errorItem">
+	    SELECT e.e_id,m.mem_id,m.mem_name,i.it_id,i.catagroy,e.Yanswer,e.times,e.finishtimes
+        from error e INNER JOIN member m ON m.mem_id=e.mem_id
+        INNER JOIN items i ON e.it_id=i.it_id
+	    where m.mem_id=#{memId}
+	</select>
+
+    <update id="updateErroritems" >
+        INSERT INTO error(mem_id,it_id,finishtimes,Yanswer,times)
+        VALUES(#{memId},#{itId},#{finishtimes},#{Yanswer},#{times})
+    </update>
+
+
+ 
+</mapper>
+    
